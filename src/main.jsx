@@ -56,6 +56,16 @@ const initialScore = {
   statement: "",
 };
 
+const initialAudition = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  sessionDate: "May 23",
+  sessionType: "Instruments",
+  instrument: "",
+  experience: "",
+};
+
 function mailto(subject, body) {
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
@@ -63,6 +73,8 @@ function mailto(subject, body) {
 function App() {
   const [score, setScore] = useState(initialScore);
   const [scoreState, setScoreState] = useState("idle");
+  const [audition, setAudition] = useState(initialAudition);
+  const [auditionState, setAuditionState] = useState("idle");
   const [donationTier, setDonationTier] = useState(100);
 
   const donationHref = mailto(
@@ -75,6 +87,24 @@ function App() {
       setScoreState("idle");
     }
     setScore((current) => ({ ...current, [field]: event.target.value }));
+  };
+
+  const updateAudition = (field) => (event) => {
+    if (auditionState !== "idle") {
+      setAuditionState("idle");
+    }
+
+    if (field === "sessionDate") {
+      const selectedSession = auditionSessions.find(([date]) => date === event.target.value);
+      setAudition((current) => ({
+        ...current,
+        sessionDate: event.target.value,
+        sessionType: selectedSession?.[3] ?? current.sessionType,
+      }));
+      return;
+    }
+
+    setAudition((current) => ({ ...current, [field]: event.target.value }));
   };
 
   const submitScore = async () => {
@@ -95,6 +125,27 @@ function App() {
     } catch (error) {
       console.error("Score submission failed", error);
       setScoreState("error");
+    }
+  };
+
+  const submitAudition = async () => {
+    if (auditionState === "submitting") {
+      return;
+    }
+
+    setAuditionState("submitting");
+
+    try {
+      await addDoc(collection(db, 'auditions'), {
+        ...audition,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+      setAudition(initialAudition);
+      setAuditionState("success");
+    } catch (error) {
+      console.error("Audition registration failed", error);
+      setAuditionState("error");
     }
   };
 
@@ -278,8 +329,8 @@ function App() {
                 Stillroom is assembling its inaugural ensemble. Auditions are split between
                 instrumentalists and vocalists.
               </p>
-              <a className="button dark" href={mailto("Stillroom audition materials", "Please send the 2026 audition materials when available.")}>
-                Request Materials
+              <a className="button dark" href="#audition-registration">
+                Register for Audition
               </a>
             </div>
             <div className="session-list">
@@ -293,6 +344,54 @@ function App() {
                   <span>{type}</span>
                 </article>
               ))}
+              <form className="panel" id="audition-registration" onSubmit={(event) => event.preventDefault()}>
+                <h3>Register for Auditions</h3>
+                <p>Choose a session and tell us where you fit best.</p>
+                <div className="form-row">
+                  <label>
+                    First name
+                    <input value={audition.firstName} onChange={updateAudition("firstName")} placeholder="First name" />
+                  </label>
+                  <label>
+                    Last name
+                    <input value={audition.lastName} onChange={updateAudition("lastName")} placeholder="Last name" />
+                  </label>
+                </div>
+                <label>
+                  Email address
+                  <input type="email" value={audition.email} onChange={updateAudition("email")} placeholder="performer@email.com" />
+                </label>
+                <label>
+                  Session
+                  <select value={audition.sessionDate} onChange={updateAudition("sessionDate")}>
+                    {auditionSessions.map(([date, title]) => (
+                      <option key={title} value={date}>{date} - {title}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  Instrument / Voice type
+                  <input value={audition.instrument} onChange={updateAudition("instrument")} placeholder="Violin, soprano, percussion..." />
+                </label>
+                <label>
+                  Brief experience note
+                  <textarea value={audition.experience} onChange={updateAudition("experience")} placeholder="Tell us about your ensemble, solo, or new-music experience." />
+                </label>
+                <button
+                  className="button primary full"
+                  disabled={auditionState === "submitting"}
+                  onClick={submitAudition}
+                  type="button"
+                >
+                  {auditionState === "submitting" ? "Submitting..." : "Register for Audition"}
+                </button>
+                {auditionState === "success" && (
+                  <div role="status">Registration received. We will be in touch with audition details.</div>
+                )}
+                {auditionState === "error" && (
+                  <div role="alert">Registration failed. Please email stillroommke@gmail.com directly.</div>
+                )}
+              </form>
             </div>
           </div>
         </section>
