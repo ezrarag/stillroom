@@ -1,5 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from './firebase';
 import "./styles.css";
 
 const email = "stillroommke@gmail.com";
@@ -42,39 +44,26 @@ const tiers = [
   ["Artistic Benefactor", 250],
 ];
 
+const initialScore = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  title: "",
+  genre: "Chamber",
+  duration: "",
+  instrumentation: "",
+  scoreLink: "",
+  statement: "",
+};
+
 function mailto(subject, body) {
   return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 function App() {
-  const [score, setScore] = useState({
-    firstName: "",
-    lastName: "",
-    composerEmail: "",
-    title: "",
-    genre: "Chamber",
-    duration: "",
-    instrumentation: "",
-    scoreLink: "",
-    statement: "",
-  });
+  const [score, setScore] = useState(initialScore);
+  const [scoreState, setScoreState] = useState("idle");
   const [donationTier, setDonationTier] = useState(100);
-
-  const scoreHref = useMemo(() => {
-    const body = [
-      `Name: ${score.firstName} ${score.lastName}`.trim(),
-      `Email: ${score.composerEmail}`,
-      `Piece title: ${score.title}`,
-      `Genre: ${score.genre}`,
-      `Duration: ${score.duration}`,
-      `Instrumentation: ${score.instrumentation}`,
-      `Score link: ${score.scoreLink}`,
-      "",
-      "Composer statement:",
-      score.statement,
-    ].join("\n");
-    return mailto("Stillroom score submission", body);
-  }, [score]);
 
   const donationHref = mailto(
     "Stillroom donation",
@@ -82,7 +71,31 @@ function App() {
   );
 
   const updateScore = (field) => (event) => {
+    if (scoreState !== "idle") {
+      setScoreState("idle");
+    }
     setScore((current) => ({ ...current, [field]: event.target.value }));
+  };
+
+  const submitScore = async () => {
+    if (scoreState === "submitting") {
+      return;
+    }
+
+    setScoreState("submitting");
+
+    try {
+      await addDoc(collection(db, 'scores'), {
+        ...score,
+        status: 'pending',
+        createdAt: serverTimestamp(),
+      });
+      setScore(initialScore);
+      setScoreState("success");
+    } catch (error) {
+      console.error("Score submission failed", error);
+      setScoreState("error");
+    }
   };
 
   return (
@@ -206,7 +219,7 @@ function App() {
               </div>
               <label>
                 Email address
-                <input type="email" value={score.composerEmail} onChange={updateScore("composerEmail")} placeholder="composer@email.com" />
+                <input type="email" value={score.email} onChange={updateScore("email")} placeholder="composer@email.com" />
               </label>
               <label>
                 Piece title
@@ -238,9 +251,20 @@ function App() {
                 Composer statement
                 <textarea value={score.statement} onChange={updateScore("statement")} placeholder="Tell us about yourself and this piece." />
               </label>
-              <a className="button primary full" href={scoreHref}>
-                Prepare Submission Email
-              </a>
+              <button
+                className="button primary full"
+                disabled={scoreState === "submitting"}
+                onClick={submitScore}
+                type="button"
+              >
+                {scoreState === "submitting" ? "Submitting..." : "Submit Score"}
+              </button>
+              {scoreState === "success" && (
+                <div role="status">Score received. Our Artistic Directors will be in touch.</div>
+              )}
+              {scoreState === "error" && (
+                <div role="alert">Submission failed. Please email stillroommke@gmail.com directly.</div>
+              )}
             </form>
           </div>
         </section>
