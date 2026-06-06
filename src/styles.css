@@ -1,14 +1,14 @@
-@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&display=swap");
 
 :root {
-  --ink: #0d0d0d;
-  --paper: #f4efe7;
-  --bone: #e7dfd3;
-  --rust: #b95029;
-  --gold: #bd9b5b;
-  --moss: #263b2c;
-  --blue: #1f3540;
-  --text: #1c1a17;
+  --ink: #1A1A1A;
+  --paper: #FFFFFF;
+  --bone: #F5F2EE;
+  --burgundy: #5C1F2E;
+  --warm-gray: #2E2E2E;
+  --gold: #9C7E4A;
+  --moss: #1E3028;
+  --text: #1A1A1A;
 }
 
 * {
@@ -50,9 +50,9 @@ a {
 
 .nav-logo,
 .footer-logo {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 1.7rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.02em;
   text-decoration: none;
 }
 
@@ -80,7 +80,7 @@ a {
 }
 
 .nav-cta {
-  background: var(--rust);
+  background: var(--burgundy);
   color: var(--paper);
   padding: 0.65rem 1.2rem;
 }
@@ -127,10 +127,10 @@ a {
 
 h1,
 h2 {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-weight: 400;
-  letter-spacing: 0.03em;
-  line-height: 0.95;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
   margin: 0;
 }
 
@@ -187,7 +187,7 @@ blockquote {
 }
 
 .button.primary {
-  background: var(--rust);
+  background: var(--burgundy);
   color: var(--paper);
 }
 
@@ -204,7 +204,7 @@ blockquote {
 
 .button.light {
   background: var(--paper);
-  color: var(--rust);
+  color: var(--burgundy);
 }
 
 .button.full {
@@ -212,7 +212,7 @@ blockquote {
 }
 
 .marquee {
-  background: var(--rust);
+  background: var(--burgundy);
   color: var(--paper);
   display: flex;
   gap: 3rem;
@@ -276,7 +276,7 @@ blockquote {
 .stat-grid strong {
   color: var(--gold);
   display: block;
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 3.2rem;
   font-weight: 400;
   line-height: 1;
@@ -292,8 +292,8 @@ blockquote {
 }
 
 .tags span {
-  border: 1px solid var(--rust);
-  color: var(--rust);
+  border: 1px solid var(--burgundy);
+  color: var(--burgundy);
   font-family: "DM Mono", monospace;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
@@ -311,10 +311,10 @@ blockquote {
 
 .panel h3 {
   color: var(--gold);
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 2rem;
   font-weight: 400;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .panel > p {
@@ -374,7 +374,7 @@ textarea {
 .session {
   align-items: center;
   background: var(--paper);
-  border-left: 4px solid var(--rust);
+  border-left: 4px solid var(--burgundy);
   display: grid;
   gap: 1.25rem;
   grid-template-columns: 82px 1fr auto;
@@ -382,10 +382,10 @@ textarea {
 }
 
 .session time {
-  color: var(--rust);
-  font-family: "Bebas Neue", sans-serif;
+  color: var(--burgundy);
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 2rem;
-  line-height: 0.95;
+  line-height: 1.05;
 }
 
 .session h3,
@@ -401,7 +401,7 @@ textarea {
 }
 
 .session span {
-  background: var(--blue);
+  background: var(--warm-gray);
   color: var(--paper);
   font-family: "DM Mono", monospace;
   font-size: 0.62rem;
@@ -498,10 +498,10 @@ textarea {
 
 .event h3 {
   align-self: end;
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 2rem;
   font-weight: 400;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
 }
 
 .event span,
@@ -510,7 +510,7 @@ textarea {
 }
 
 .donate {
-  background: var(--rust);
+  background: var(--burgundy);
   color: var(--paper);
 }
 
@@ -541,7 +541,7 @@ textarea {
 }
 
 .tier strong {
-  font-family: "Bebas Neue", sans-serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-size: 1.7rem;
   font-weight: 400;
 }
