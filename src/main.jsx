@@ -75,6 +75,9 @@ function App() {
   const [scoreState, setScoreState] = useState("idle");
   const [audition, setAudition] = useState(initialAudition);
   const [auditionState, setAuditionState] = useState("idle");
+  const [subEmail, setSubEmail] = useState("");
+  const [subName, setSubName] = useState("");
+  const [subState, setSubState] = useState("idle");
   const [donationTier, setDonationTier] = useState(100);
 
   const donationHref = mailto(
@@ -146,6 +149,28 @@ function App() {
     } catch (error) {
       console.error("Audition registration failed", error);
       setAuditionState("error");
+    }
+  };
+
+  const submitSubscriber = async () => {
+    if (subState === "submitting") {
+      return;
+    }
+
+    setSubState("submitting");
+
+    try {
+      await addDoc(collection(db, 'subscribers'), {
+        name: subName,
+        email: subEmail,
+        createdAt: serverTimestamp(),
+      });
+      setSubName("");
+      setSubEmail("");
+      setSubState("success");
+    } catch (error) {
+      console.error("Subscriber signup failed", error);
+      setSubState("error");
     }
   };
 
@@ -480,6 +505,54 @@ function App() {
               </a>
               <p>Stillroom Music Inc. is described as a 501(c)(3) nonprofit organization.</p>
             </div>
+          </div>
+        </section>
+
+        <section className="subscribe section">
+          <div className="container">
+            <h2>Stay in the Room</h2>
+            <p>Get updates on auditions, score calls, and concert season.</p>
+            <form onSubmit={(event) => event.preventDefault()}>
+              <div className="form-row">
+                <label>
+                  Name
+                  <input
+                    value={subName}
+                    onChange={(event) => {
+                      setSubState("idle");
+                      setSubName(event.target.value);
+                    }}
+                    placeholder="Your name"
+                  />
+                </label>
+                <label>
+                  Email
+                  <input
+                    type="email"
+                    value={subEmail}
+                    onChange={(event) => {
+                      setSubState("idle");
+                      setSubEmail(event.target.value);
+                    }}
+                    placeholder="you@email.com"
+                  />
+                </label>
+              </div>
+              <button
+                className="button primary"
+                disabled={subState === "submitting"}
+                onClick={submitSubscriber}
+                type="button"
+              >
+                {subState === "submitting" ? "Submitting..." : "Subscribe"}
+              </button>
+              {subState === "success" && (
+                <div role="status">You're on the list.</div>
+              )}
+              {subState === "error" && (
+                <div role="alert">Signup failed. Please email stillroommke@gmail.com directly.</div>
+              )}
+            </form>
           </div>
         </section>
       </main>

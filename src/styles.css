@@ -554,6 +554,23 @@ textarea {
   text-align: center;
 }
 
+.subscribe {
+  background: var(--warm-gray);
+  color: var(--paper);
+}
+
+.subscribe p {
+  color: rgba(244, 239, 231, 0.68);
+  max-width: 520px;
+}
+
+.subscribe form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+  max-width: 760px;
+}
+
 .footer {
   background: var(--ink);
   color: var(--paper);
